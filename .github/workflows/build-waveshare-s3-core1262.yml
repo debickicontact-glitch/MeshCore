@@ -23,7 +23,7 @@ jobs:
           pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble
           pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble -t mergebin
 
-        - name: Build Startup Test
+      - name: Build Startup Test
         run: |
           pio run -e Waveshare_S3_Zero_startup_test
           pio run -e Waveshare_S3_Zero_startup_test -t mergebin

@@ -1,0 +1,28 @@
+name: Build Waveshare S3 Core1262
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'variants/waveshare_s3_zero_core1262/**'
+      - '.github/workflows/build-waveshare-s3-core1262.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v6
+
+      - name: Setup Build Environment
+        uses: ./.github/actions/setup-build-environment
+
+      - name: Build Companion BLE
+        run: pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble
+
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: Waveshare-S3-Zero-Core1262-Companion-BLE
+          path: .pio/build/Waveshare_S3_Zero_Core1262_companion_radio_ble/

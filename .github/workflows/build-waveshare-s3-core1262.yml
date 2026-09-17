@@ -19,7 +19,9 @@ jobs:
         uses: ./.github/actions/setup-build-environment
 
       - name: Build Companion BLE
-        run: pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble
+        run: |
+          pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble
+          pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble -t mergebin
 
       - name: Upload Firmware
         uses: actions/upload-artifact@v4

@@ -33,3 +33,9 @@ jobs:
         with:
           name: Waveshare-S3-Zero-Core1262-Companion-BLE
           path: .pio/build/Waveshare_S3_Zero_Core1262_companion_radio_ble/
+
+      - name: Upload Startup Test
+        uses: actions/upload-artifact@v4
+        with:
+          name: Waveshare-S3-Zero-Startup-Test
+          path: .pio/build/Waveshare_S3_Zero_startup_test/

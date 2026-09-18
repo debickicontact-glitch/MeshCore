@@ -195,6 +195,14 @@ bool SerialBLEInterface::isWriteBusy() const {
 }
 
 size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
+
+  if (send_queue_len > 0) {
+    Serial.printf("CHECK queue=%d now=%lu last=%lu\n",
+                  send_queue_len,
+                  millis(),
+                  _last_write);
+  }
+  
   if (send_queue_len > 0   // first, check send queue
     && millis() >= _last_write + BLE_WRITE_MIN_INTERVAL    // space the writes apart
   ) {

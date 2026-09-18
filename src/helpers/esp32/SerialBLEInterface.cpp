@@ -200,7 +200,14 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
   ) {
     _last_write = millis();
     pTxCharacteristic->setValue(send_queue[0].buf, send_queue[0].len);
+
+    Serial.printf("BLE BEFORE NOTIFY len=%u hdr=%u\n",
+              (unsigned)send_queue[0].len,
+              (unsigned)send_queue[0].buf[0]);
+    
     pTxCharacteristic->notify();
+
+    Serial.println("BLE AFTER NOTIFY");
 
     BLE_DEBUG_PRINTLN("writeBytes: sz=%d, hdr=%d", (uint32_t)send_queue[0].len, (uint32_t) send_queue[0].buf[0]);
 

@@ -221,6 +221,9 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
     Serial.printf("BLE BEFORE NOTIFY len=%u hdr=%u\n",
               (unsigned)send_queue[0].len,
               (unsigned)send_queue[0].buf[0]);
+
+    Serial.printf("BLE PEER MTU=%u\n",
+              (unsigned)pServer->getPeerMTU(last_conn_id));
     
     pTxCharacteristic->notify();
 

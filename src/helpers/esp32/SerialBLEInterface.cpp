@@ -44,7 +44,8 @@ void SerialBLEInterface::begin(const char* prefix, char* name, uint32_t pin_code
   // Create a BLE Characteristic
   pTxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_TX, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
   pTxCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ);
-  pTxCharacteristic->addDescriptor(new BLE2902());
+  BLE2902* p2902 = new BLE2902();
+  pTxCharacteristic->addDescriptor(p2902);
 
   BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
   pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENC_MITM);
@@ -211,6 +212,11 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
   ) {
     _last_write = millis();
     pTxCharacteristic->setValue(send_queue[0].buf, send_queue[0].len);
+
+    BLE2902* cccd = (BLE2902*)pTxCharacteristic->getDescriptorByUUID((uint16_t)0x2902);
+
+    Serial.printf("BLE CCCD notify=%d\n",
+              cccd ? (cccd->getNotifications() ? 1 : 0) : -1);
 
     Serial.printf("BLE BEFORE NOTIFY len=%u hdr=%u\n",
               (unsigned)send_queue[0].len,

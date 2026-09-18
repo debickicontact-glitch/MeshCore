@@ -166,6 +166,8 @@ void SerialBLEInterface::disable() {
 }
 
 size_t SerialBLEInterface::writeFrame(const uint8_t src[], size_t len) {
+  Serial.printf("BLE writeFrame ENTER len=%u\n", (unsigned)len);
+  
   if (len > MAX_FRAME_SIZE) {
     BLE_DEBUG_PRINTLN("writeFrame(), frame too big, len=%d", len);
     return 0;

@@ -232,6 +232,12 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
 
     Serial.printf("BLE PEER MTU=%u\n",
               (unsigned)pServer->getPeerMTU(last_conn_id));
+
+    Serial.print("BLE TX DATA = ");
+    for (int i = 0; i < send_queue[0].len; i++) {
+      Serial.printf("%02X ", send_queue[0].buf[i]);
+    }
+    Serial.println();
     
     pTxCharacteristic->notify();
 

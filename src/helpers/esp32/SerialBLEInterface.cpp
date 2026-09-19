@@ -116,11 +116,13 @@ void SerialBLEInterface::onWrite(BLECharacteristic* pCharacteristic, esp_ble_gat
   uint8_t* rxValue = pCharacteristic->getData();
   int len = pCharacteristic->getLength();
 
-  Serial.printf("BLE RX len=%d data=", len);
-  for (int i = 0; i < len; i++) {
-    Serial.printf("%02X ", rxValue[i]);
-  }
-  Serial.println();
+  Serial.printf("\n>>> BLE RX FRAME len=%d <<<\n", len);
+
+    for (int i = 0; i < len; i++) {
+  Serial.printf("RX[%d] = 0x%02X\n", i, rxValue[i]);
+    }
+
+  Serial.println(">>> END RX FRAME <<<");
 
   if (len > MAX_FRAME_SIZE) {
     BLE_DEBUG_PRINTLN("ERROR: onWrite(), frame too big, len=%d", len);

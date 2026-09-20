@@ -42,13 +42,22 @@ void SerialBLEInterface::begin(const char* prefix, char* name, uint32_t pin_code
   pService = pServer->createService(SERVICE_UUID);
 
   // Create a BLE Characteristic
-  pTxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_TX, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pTxCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ);
-  BLE2902* p2902 = new BLE2902();
-  pTxCharacteristic->addDescriptor(p2902);
+  pTxCharacteristic = pService->createCharacteristic(
+      CHARACTERISTIC_UUID_TX,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
+  );
 
-  BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
-  pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE);
+  pTxCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ_ENC_MITM);
+    BLE2902* p2902 = new BLE2902();
+    pTxCharacteristic->addDescriptor(p2902);
+
+  BLECharacteristic * pRxCharacteristic =
+      pService->createCharacteristic(
+          CHARACTERISTIC_UUID_RX,
+          BLECharacteristic::PROPERTY_WRITE
+      );
+
+  pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENC_MITM);
   pRxCharacteristic->setCallbacks(this);
 
   pServer->getAdvertising()->addServiceUUID(SERVICE_UUID);
@@ -93,10 +102,17 @@ void SerialBLEInterface::onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl) {
 void SerialBLEInterface::onConnect(BLEServer* pServer) {
 }
 
-void SerialBLEInterface::onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param) {
-  BLE_DEBUG_PRINTLN("onConnect(), conn_id=%d, mtu=%d", param->connect.conn_id, pServer->getPeerMTU(param->connect.conn_id));
-  last_conn_id = param->connect.conn_id;
-  
+void SerialBLEInterface::onConnect(
+    BLEServer* pServer,
+    esp_ble_gatts_cb_param_t *param
+) {
+    BLE_DEBUG_PRINTLN(
+        "onConnect(), conn_id=%d, mtu=%d",
+        param->connect.conn_id,
+        pServer->getPeerMTU(param->connect.conn_id)
+    );
+
+    last_conn_id = param->connect.conn_id;
 }
 
 void SerialBLEInterface::onMtuChanged(BLEServer* pServer, esp_ble_gatts_cb_param_t* param) {

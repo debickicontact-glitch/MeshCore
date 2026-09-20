@@ -48,7 +48,7 @@ void SerialBLEInterface::begin(const char* prefix, char* name, uint32_t pin_code
   pTxCharacteristic->addDescriptor(p2902);
 
   BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
-  pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENC_MITM);
+  pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE);
   pRxCharacteristic->setCallbacks(this);
 
   pServer->getAdvertising()->addServiceUUID(SERVICE_UUID);

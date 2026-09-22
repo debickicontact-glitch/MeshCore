@@ -23,6 +23,11 @@ jobs:
           pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble
           pio run -e Waveshare_S3_Zero_Core1262_companion_radio_ble -t mergebin
 
+      - name: Build Companion USB
+        run: |
+          pio run -e Waveshare_S3_Zero_Core1262_companion_radio_usb
+          pio run -e Waveshare_S3_Zero_Core1262_companion_radio_usb -t mergebin
+
       - name: Build Startup Test
         run: |
           pio run -e Waveshare_S3_Zero_startup_test
@@ -33,6 +38,12 @@ jobs:
         with:
           name: Waveshare-S3-Zero-Core1262-Companion-BLE
           path: .pio/build/Waveshare_S3_Zero_Core1262_companion_radio_ble/
+
+      - name: Upload USB Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: Waveshare-S3-Zero-Core1262-Companion-USB
+          path: .pio/build/Waveshare_S3_Zero_Core1262_companion_radio_usb/
 
       - name: Upload Startup Test
         uses: actions/upload-artifact@v4

@@ -100,6 +100,7 @@ void SerialBLEInterface::onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl) {
 // -------- BLEServerCallbacks methods
 
 void SerialBLEInterface::onConnect(BLEServer* pServer) {
+  deviceConnected = true;
 }
 
 void SerialBLEInterface::onConnect(

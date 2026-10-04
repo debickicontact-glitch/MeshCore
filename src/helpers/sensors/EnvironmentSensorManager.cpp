@@ -411,7 +411,7 @@ static uint8_t init_ina226_pv(TwoWire*, uint8_t) {
 }
 
 static void query_ina226_pv(uint8_t ch, uint8_t, CayenneLPP& lpp) {
-  lpp.addVoltage(ch, INA226_PV.getBusVoltage());
+  lpp.addVoltage(ch, INA226_PV.getBusVoltage() * 0.94f);
   lpp.addCurrent(ch, INA226_PV.getCurrent_mA() / 1000.0f);
   lpp.addPower(ch, INA226_PV.getPower_mW() / 1000.0f);
 }
@@ -423,7 +423,7 @@ static uint8_t init_ina226_bat(TwoWire*, uint8_t) {
 }
 
 static void query_ina226_bat(uint8_t ch, uint8_t, CayenneLPP& lpp) {
-  lpp.addVoltage(ch, INA226_BAT.getBusVoltage());
+  lpp.addVoltage(ch, INA226_BAT.getBusVoltage() * 0.94f);
   lpp.addCurrent(ch, INA226_BAT.getCurrent_mA() / 1000.0f);
   lpp.addPower(ch, INA226_BAT.getPower_mW() / 1000.0f);
 }

@@ -127,13 +127,18 @@ static Adafruit_INA260 INA260;
 #endif
 
 #if ENV_INCLUDE_INA226
-#ifndef TELEM_INA226_ADDRESS
-#define TELEM_INA226_ADDRESS     0x44
-#endif
-#define TELEM_INA226_SHUNT_VALUE 0.100
-#define TELEM_INA226_MAX_AMP     0.8
+
+#define TELEM_INA226_PV_ADDRESS   0x44
+#define TELEM_INA226_BAT_ADDRESS  0x45
+
+#define TELEM_INA226_SHUNT_VALUE  0.100
+#define TELEM_INA226_MAX_AMP      0.8
+
 #include <INA226.h>
-static INA226 INA226(TELEM_INA226_ADDRESS, TELEM_WIRE);
+
+static INA226 INA226_PV(TELEM_INA226_PV_ADDRESS, TELEM_WIRE);
+static INA226 INA226_BAT(TELEM_INA226_BAT_ADDRESS, TELEM_WIRE);
+
 #endif
 
 #if ENV_INCLUDE_MLX90614
@@ -398,19 +403,32 @@ static void query_ina260(uint8_t ch, uint8_t, CayenneLPP& lpp) {
 #endif
 
 #if ENV_INCLUDE_INA226
-static uint8_t init_ina226(TwoWire*, uint8_t) {
-  // INA226 static instance was constructed with address and wire.
-  if (!INA226.begin()) return 0;
-  INA226.setMaxCurrentShunt(TELEM_INA226_MAX_AMP, TELEM_INA226_SHUNT_VALUE);
+
+static uint8_t init_ina226_pv(TwoWire*, uint8_t) {
+  if (!INA226_PV.begin()) return 0;
+  INA226_PV.setMaxCurrentShunt(TELEM_INA226_MAX_AMP, TELEM_INA226_SHUNT_VALUE);
   return 1;
 }
-static void query_ina226(uint8_t ch, uint8_t, CayenneLPP& lpp) {
-  lpp.addVoltage(ch, INA226.getBusVoltage());
-  lpp.addCurrent(ch, INA226.getCurrent_mA() / 1000.0f);
-  lpp.addPower(ch, INA226.getPower_mW() / 1000.0f);
-}
-#endif
 
+static void query_ina226_pv(uint8_t ch, uint8_t, CayenneLPP& lpp) {
+  lpp.addVoltage(ch, INA226_PV.getBusVoltage());
+  lpp.addCurrent(ch, INA226_PV.getCurrent_mA() / 1000.0f);
+  lpp.addPower(ch, INA226_PV.getPower_mW() / 1000.0f);
+}
+
+static uint8_t init_ina226_bat(TwoWire*, uint8_t) {
+  if (!INA226_BAT.begin()) return 0;
+  INA226_BAT.setMaxCurrentShunt(TELEM_INA226_MAX_AMP, TELEM_INA226_SHUNT_VALUE);
+  return 1;
+}
+
+static void query_ina226_bat(uint8_t ch, uint8_t, CayenneLPP& lpp) {
+  lpp.addVoltage(ch, INA226_BAT.getBusVoltage());
+  lpp.addCurrent(ch, INA226_BAT.getCurrent_mA() / 1000.0f);
+  lpp.addPower(ch, INA226_BAT.getPower_mW() / 1000.0f);
+}
+
+#endif
 #if ENV_INCLUDE_MLX90614
 static uint8_t init_mlx90614(TwoWire* wire, uint8_t addr) {
   return MLX90614.begin(addr, wire) ? 2 : 0;  // 2 channels: object temp, ambient temp
@@ -586,7 +604,8 @@ static const SensorDef SENSOR_TABLE[] = {
   { TELEM_INA260_ADDRESS,  "INA260",       init_ina260,   query_ina260   },
 #endif
 #if ENV_INCLUDE_INA226
-  { TELEM_INA226_ADDRESS,  "INA226",       init_ina226,   query_ina226   },
+  { TELEM_INA226_PV_ADDRESS,  "INA226-PV",  init_ina226_pv,  query_ina226_pv  },
+  { TELEM_INA226_BAT_ADDRESS, "INA226-BAT", init_ina226_bat, query_ina226_bat },
 #endif
 #if ENV_INCLUDE_MLX90614
   { TELEM_MLX90614_ADDRESS,"MLX90614",     init_mlx90614, query_mlx90614 },
